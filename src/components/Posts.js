@@ -45,7 +45,7 @@ const Posts = ({ search }) => {
         next={() => {
           setLoadMore(true);
         }}
-        hasMore={posts.length < 20} // showing only 20 posts at max
+        hasMore={posts.length < 20 && !search} // showing only 20 posts at max
         loader={<Loader />}
         endMessage={
           <p style={{ textAlign: "center" }}>
