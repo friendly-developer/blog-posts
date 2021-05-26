@@ -32,6 +32,11 @@ const Posts = ({ search }) => {
     setPosts(orginalPosts.filter((post) => post.title.includes(search)));
   }, [search]);
 
+  const onDeletePosts = (postId) => {
+    orginalPosts = orginalPosts.filter((post) => post.id !== postId);
+    setPosts(orginalPosts);
+  };
+
   return (
     <div
       id="scrollableDiv"
@@ -45,7 +50,7 @@ const Posts = ({ search }) => {
         next={() => {
           setLoadMore(true);
         }}
-        hasMore={posts.length < 20 && !search} // showing only 20 posts at max
+        hasMore={posts.length < 30 && !search} // showing only 20 posts at max
         loader={<Loader />}
         endMessage={
           <p style={{ textAlign: "center" }}>
@@ -55,7 +60,7 @@ const Posts = ({ search }) => {
       >
         <div className="ui cards grid push-20">
           {posts.map((post) => (
-            <Post post={post} key={post.id} />
+            <Post post={post} key={post.id} isDeleted={onDeletePosts} />
           ))}
         </div>
       </InfiniteScroll>

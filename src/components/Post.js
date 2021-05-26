@@ -1,11 +1,13 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Redirect, Link } from "react-router-dom";
 
+import { API_POSTS } from "../constants/APIConstants";
+
 import Loader from "./Loader";
 
 import UserContext from "../contexts/UserContext";
 
-const Post = ({ post }) => {
+const Post = ({ post, isDeleted }) => {
   const [user, setUser] = useState("Loading..");
   const [redirect, setRedirect] = useState(false);
   const userObj = useContext(UserContext);
@@ -21,6 +23,26 @@ const Post = ({ post }) => {
   const redirectToPostDetail = (e) => {
     setRedirect(true);
   };
+
+  const callDeletePost = async () => {
+    const url = API_POSTS + "/" + id;
+    const method = "DELETE";
+    try {
+      const onSuccess = await fetch(url, { method });
+      const data = await onSuccess.json();
+      isDeleted(id);
+    } catch (err) {
+      console.error("Deletion failed for " + id);
+    }
+  };
+
+  const onDeletePostClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    callDeletePost();
+  };
+
   if (!post) return <Loader />;
 
   if (redirect) return <Redirect to={"/post/" + id} />;
@@ -32,6 +54,9 @@ const Post = ({ post }) => {
         <div className="description">{body.substring(0, 100)}</div>
       </div>
       <div className="extra content">
+        <a className="left flaoted reply" onClick={onDeletePostClick}>
+          Delete
+        </a>
         <div className="right floated author">
           <Link to={"/user/" + userId}>
             <div className="meta">{user}</div>
